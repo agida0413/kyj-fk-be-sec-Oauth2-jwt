@@ -1,0 +1,74 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.3"
+		// 또는 명시적으로:
+		// mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.3"
+	}
+}
+
+group = 'com.kyj.fmk'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		implementation 'org.springframework.boot:spring-boot-starter-security'
+		implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+		implementation 'org.springframework.boot:spring-boot-starter-mail'
+		implementation 'org.springframework.boot:spring-boot-starter-aop'
+		implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+		implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+		implementation 'org.springframework.boot:spring-boot-starter-data-redis'  // Lettuce 포함, 버전 관리됨
+
+		implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+		runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
+		runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+
+		runtimeOnly 'com.mysql:mysql-connector-j'
+
+		implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+
+		implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
+		compileOnly fileTree(dir: 'libs', include: ['*.jar'], exclude: ['netty-*.jar'])
+
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+		testImplementation 'org.springframework.security:spring-security-test'
+		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+		implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'  // reactor-netty 명시적 추가 (필요 시)
+	}
+
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
