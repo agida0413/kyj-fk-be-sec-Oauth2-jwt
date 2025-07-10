@@ -8,8 +8,8 @@ spring:
         registration:
           naver:
             client-name: naver
-            client-id: R4QJ86e_AOfe8do9W8xB
-            client-secret: 1skpbStr2T
+            client-id:
+            client-secret:
             redirect-uri: http://localhost:8080/login/oauth2/code/naver
             authorization-grant-type: authorization_code
             scope:
@@ -17,8 +17,8 @@ spring:
               - email
           google:
             client-name: google
-            client-id: 15377527623-5k66hd6kuta9hmrb9r1ac2ohv60eoqlt.apps.googleusercontent.com
-            client-secret: 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
+            client-id:
+            client-secret:
             redirect-uri: http://localhost:8080/login/oauth2/code/google
             authorization-grant-type: authorization_code
             scope:
