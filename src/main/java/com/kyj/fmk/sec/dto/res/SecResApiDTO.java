@@ -23,7 +23,7 @@ public class SecResApiDTO<T> extends BaseSecResDTO {
      * Rest api response
      *  응답데이터가 있는 생성자
      *  호출시 기본값을 세팅한다
-     * @param <>
+     * @param data
      *
      */
     public SecResApiDTO(T data){

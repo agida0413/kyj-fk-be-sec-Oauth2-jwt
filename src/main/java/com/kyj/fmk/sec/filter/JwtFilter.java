@@ -1,6 +1,5 @@
 package com.kyj.fmk.sec.filter;
 
-import com.kyj.fmk.core.util.CookieUtil;
 import com.kyj.fmk.sec.config.UrlConst;
 import com.kyj.fmk.sec.dto.CustomOAuth2User;
 import com.kyj.fmk.sec.dto.UserDTO;
@@ -44,6 +43,9 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, java.io.IOException {
 
         String accessToken = null;
+
+
+
         // 헤더에서 access키에 담긴 토큰을 꺼냄
         Cookie[] cookies = request.getCookies();
         if(cookies != null){
@@ -105,5 +107,12 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
+        // 🔁 체인 이후에도 SecurityContext 유지 확인
+        Authentication postAuth = SecurityContextHolder.getContext().getAuthentication();
+        if (postAuth != null) {
+            System.out.println("🔍 필터 이후에도 인증 유지: " + postAuth.getName() + " / " + postAuth.getAuthorities());
+        } else {
+            System.out.println("⚠️ 필터 이후 인증 정보 없음 (SecurityContext 비어 있음)");
+        }
     }
 }

@@ -57,13 +57,12 @@ dependencies {
 
 		implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
-		compileOnly fileTree(dir: 'libs', include: ['*.jar'], exclude: ['netty-*.jar'])
-
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		testImplementation 'org.springframework.security:spring-security-test'
 		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 		implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'  // reactor-netty 명시적 추가 (필요 시)
+		implementation fileTree(dir: 'libs')
 	}
 
 

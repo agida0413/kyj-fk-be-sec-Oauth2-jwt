@@ -137,21 +137,24 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         //로그아웃 진행
         //Refresh 토큰 DB에서 제거
-        String username = jwtUtil.getUsername(refresh); // 레디스 키값
-        tokenService.deleteRefresh(username, refresh);
+        if(refresh != null){
+            String username = jwtUtil.getUsername(refresh); // 레디스 키값
+            tokenService.deleteRefresh(username, refresh);
+            //refresh 쿠키제거메서드
+            ResponseCookie responseCookie1 = CookieUtil.deleteCookie("refresh", "/");
+            response.addHeader(HttpHeaders.SET_COOKIE,responseCookie1.toString());
+        }
 
 
-        //refresh 쿠키제거메서드
-        ResponseCookie responseCookie1 = CookieUtil.deleteCookie("refresh", "/");
-        ResponseCookie responseCookie2 = CookieUtil.deleteCookie("Authorization", "/");
 
-        response.addHeader(HttpHeaders.SET_COOKIE,responseCookie1.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE,responseCookie2.toString());
+        if(access != null){
+            ResponseCookie responseCookie2 = CookieUtil.deleteCookie("Authorization", "/");
+            response.addHeader(HttpHeaders.SET_COOKIE,responseCookie2.toString());
+        }
 
         //성공 응답값
         SecurityResponse.writeSuccessRes(response);
 
-        response.sendRedirect("http://localhost:8080/login");
     }
 
 

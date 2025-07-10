@@ -1,28 +1,28 @@
 package com.kyj.fmk.sec.config;
 
+import com.kyj.fmk.sec.filter.Testfilter;
+import com.kyj.fmk.sec.handler.CustomAuthenticationEntryPoint;
 import com.kyj.fmk.sec.filter.CustomLogoutFilter;
 import com.kyj.fmk.sec.filter.JwtFilter;
+import com.kyj.fmk.sec.handler.CustomLogoutSuccessHandler;
 import com.kyj.fmk.sec.jwt.JWTUtil;
 import com.kyj.fmk.sec.oauth2.CustomSuccessHandler;
 import com.kyj.fmk.sec.service.CustomOauth2UserService;
-import com.kyj.fmk.sec.service.TokenRedisService;
 import com.kyj.fmk.sec.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
-import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -73,7 +73,7 @@ public class SecurityConfig {
 
         //From 로그인 방식 disable
         http
-                .formLogin((auth) -> auth.disable());
+                .formLogin((auth)->auth.disable());
 
         //HTTP Basic 인증 방식 disable
         http
@@ -85,8 +85,15 @@ public class SecurityConfig {
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOauth2UserService))
                         .successHandler(customSuccessHandler)
+//                       .defaultSuccessUrl("http://localhost:8080/oauth-success", true) // 프론트엔드 SPA 경로
                 );
-
+        //예외처리
+        http
+                .exceptionHandling((ex)->
+                        ex.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+        //로그아웃
+        http    .logout((lg) ->
+                        lg.logoutSuccessHandler(new CustomLogoutSuccessHandler()));
         //JWTFilter 추가
         http
                 .addFilterAfter(new JwtFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
@@ -104,6 +111,7 @@ public class SecurityConfig {
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.addFilterAfter(new Testfilter(), AnonymousAuthenticationFilter.class);
 
         return http.build();
     }

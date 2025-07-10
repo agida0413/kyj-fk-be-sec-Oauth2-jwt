@@ -53,6 +53,5 @@ public final class SecurityResponse {
             throw new RuntimeException(e);
         }
 
-        System.out.println(msg);
     }
 }

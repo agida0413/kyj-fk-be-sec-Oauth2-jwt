@@ -1,0 +1,161 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.agida0413",
+    "module": "sec-fmk-kimyj",
+    "version": "0.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "sec-fmk-kimyj-0.0.1-plain.jar",
+          "url": "sec-fmk-kimyj-0.0.1-plain.jar",
+          "size": 40780,
+          "sha512": "4047853aa8543038e9d858d8e8a607a43f3fa7d2be7e23500883469945f68a647e865dcff480267ec17be64cc80a6c5d8e09c6a1ee9b44d782796b08771c40d6",
+          "sha256": "9e7bb1f25fa9ca60e7dbbab1d92460ba5c190bdb2f5e92470998a5bd735a066f",
+          "sha1": "4d856ac18ebf92d63ec61372d77f29431e3f4e26",
+          "md5": "77bd5accab7ce89b9cf1bb4203938409"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-web"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-security"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-oauth2-client"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-data-jpa"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-mail"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-aop"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-jdbc"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-validation"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-data-redis"
+        },
+        {
+          "group": "io.jsonwebtoken",
+          "module": "jjwt-api",
+          "version": {
+            "requires": "0.12.3"
+          }
+        },
+        {
+          "group": "org.mybatis.spring.boot",
+          "module": "mybatis-spring-boot-starter",
+          "version": {
+            "requires": "3.0.3"
+          }
+        },
+        {
+          "group": "org.bgee.log4jdbc-log4j2",
+          "module": "log4jdbc-log4j2-jdbc4.1",
+          "version": {
+            "requires": "1.16"
+          }
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-reactor-netty"
+        },
+        {
+          "group": "io.jsonwebtoken",
+          "module": "jjwt-impl",
+          "version": {
+            "requires": "0.12.3"
+          }
+        },
+        {
+          "group": "io.jsonwebtoken",
+          "module": "jjwt-jackson",
+          "version": {
+            "requires": "0.12.3"
+          }
+        },
+        {
+          "group": "com.mysql",
+          "module": "mysql-connector-j"
+        }
+      ],
+      "files": [
+        {
+          "name": "sec-fmk-kimyj-0.0.1-plain.jar",
+          "url": "sec-fmk-kimyj-0.0.1-plain.jar",
+          "size": 40780,
+          "sha512": "4047853aa8543038e9d858d8e8a607a43f3fa7d2be7e23500883469945f68a647e865dcff480267ec17be64cc80a6c5d8e09c6a1ee9b44d782796b08771c40d6",
+          "sha256": "9e7bb1f25fa9ca60e7dbbab1d92460ba5c190bdb2f5e92470998a5bd735a066f",
+          "sha1": "4d856ac18ebf92d63ec61372d77f29431e3f4e26",
+          "md5": "77bd5accab7ce89b9cf1bb4203938409"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "sec-fmk-kimyj-0.0.1-sources.jar",
+          "url": "sec-fmk-kimyj-0.0.1-sources.jar",
+          "size": 25391,
+          "sha512": "2eb0b6cc1fe7a2a6912b183dfe3426cf4fa55200dded6bb43c0d0a9ce35edb4dc9a6ec09cbfbc287aeb53ac59d283a4ac964f287ca25cdca20ac4fbd73cf8322",
+          "sha256": "4ccce4d6e8e5f60994eaf03c71e91124cbe1f99f953912ad7ae87d64e642bd3e",
+          "sha1": "c7ac33200b7b0ed92f71f0b6d3916d0f5f8529f6",
+          "md5": "9283197c131d7b9a6fcd615c3679c099"
+        }
+      ]
+    }
+  ]
+}
