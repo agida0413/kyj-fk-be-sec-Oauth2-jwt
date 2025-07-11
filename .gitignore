@@ -25,3 +25,12 @@ replay_pid*
 
 .idea
 .DS_Store
+.gradle/8.14.2/checksums/checksums.lock
+.gradle/8.14.2/executionHistory/executionHistory.bin
+.gradle/8.14.2/executionHistory/executionHistory.lock
+.gradle/8.14.2/fileHashes/fileHashes.bin
+.gradle/8.14.2/fileHashes/fileHashes.lock
+build/reports/problems/problems-report.html
+.gradle/8.14.2/fileHashes/resourceHashesCache.bin
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+.gradle/file-system.probe
