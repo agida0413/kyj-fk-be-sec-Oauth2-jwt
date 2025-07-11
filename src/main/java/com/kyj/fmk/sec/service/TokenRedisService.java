@@ -1,6 +1,7 @@
 package com.kyj.fmk.sec.service;
 
 
+import com.kyj.fmk.core.exception.custom.KyjBizException;
 import com.kyj.fmk.core.exception.custom.KyjSysException;
 import com.kyj.fmk.core.model.dto.ResApiDTO;
 import com.kyj.fmk.core.model.enm.ApiErrCode;
@@ -42,7 +43,7 @@ public class TokenRedisService implements TokenService{
 
         String findToken =(String)redisTemplate.opsForValue().get(rediskey);
 
-        if(findToken != null &&findToken.equals(token)){
+        if(findToken != null && findToken.equals(token)){
             redisTemplate.delete(rediskey);
         }
 
@@ -91,7 +92,7 @@ public class TokenRedisService implements TokenService{
         }
 
         if (refresh == null) {//만약 refresh가 없다면
-            throw new KyjSysException(ApiErrCode.CM003);
+            throw new KyjBizException(ApiErrCode.CM001,"인증정보가 존재하지 않습니다.");
 
         }
 

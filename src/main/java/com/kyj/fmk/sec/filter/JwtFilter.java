@@ -1,6 +1,6 @@
 package com.kyj.fmk.sec.filter;
 
-import com.kyj.fmk.sec.config.UrlConst;
+import com.kyj.fmk.sec.aware.UrlConst;
 import com.kyj.fmk.sec.dto.CustomOAuth2User;
 import com.kyj.fmk.sec.dto.UserDTO;
 import com.kyj.fmk.sec.dto.res.SecurityResponse;
@@ -32,6 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
         // UrlConst.publicUrls 리스트 안의 패턴과 비교해서 하나라도 매칭되면 필터 제외
         for (String pattern : UrlConst.publicUrls) {
             if (pathMatcher.match(pattern, requestURI)) {
+                System.out.println("pattern = " + pattern);
+                System.out.println("requestURI = " + requestURI);
                 return true;  // 필터를 수행하지 않음 (즉, 필터 제외)
             }
         }
@@ -43,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, java.io.IOException {
 
         String accessToken = null;
-
+        String refreshToken = null;
 
 
         // 헤더에서 access키에 담긴 토큰을 꺼냄
@@ -55,6 +57,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     accessToken = cookie.getValue();
                 }
+                if (cookie.getName().equals("refresh")) {
+
+                    refreshToken = cookie.getValue();
+                }
             }
         }
 
@@ -62,6 +68,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // 토큰이 없다면 다음 필터로 넘김
         if (accessToken == null) {
+
+            if(refreshToken != null ){
+                SecurityResponse.writeErrorRes(response, HttpStatus.GONE,SecErrCode.SEC003);
+                return;
+            }
 
             filterChain.doFilter(request, response);
 
@@ -107,12 +118,6 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
-        // 🔁 체인 이후에도 SecurityContext 유지 확인
-        Authentication postAuth = SecurityContextHolder.getContext().getAuthentication();
-        if (postAuth != null) {
-            System.out.println("🔍 필터 이후에도 인증 유지: " + postAuth.getName() + " / " + postAuth.getAuthorities());
-        } else {
-            System.out.println("⚠️ 필터 이후 인증 정보 없음 (SecurityContext 비어 있음)");
-        }
+
     }
 }

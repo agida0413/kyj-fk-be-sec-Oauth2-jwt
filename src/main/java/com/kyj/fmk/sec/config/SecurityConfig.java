@@ -1,6 +1,8 @@
 package com.kyj.fmk.sec.config;
 
-import com.kyj.fmk.sec.filter.Testfilter;
+
+import com.kyj.fmk.sec.aware.EndpointUrlCollector;
+import com.kyj.fmk.sec.filter.PreCheckHandlerMappingFilter;
 import com.kyj.fmk.sec.handler.CustomAuthenticationEntryPoint;
 import com.kyj.fmk.sec.filter.CustomLogoutFilter;
 import com.kyj.fmk.sec.filter.JwtFilter;
@@ -17,12 +19,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.servlet.HandlerMapping;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -32,21 +39,38 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final CustomSuccessHandler customSuccessHandler;
     private final TokenService tokenService;
+    private final List<HandlerMapping> handlerMappings;
+
+    private final EndpointUrlCollector endpointUrlCollector;
 
 
 
 
-
-    public SecurityConfig(CustomOauth2UserService customOauth2UserService,JWTUtil jwtUtil, CustomSuccessHandler customSuccessHandler,TokenService tokenService) {
+    public SecurityConfig(CustomOauth2UserService customOauth2UserService,
+                          JWTUtil jwtUtil,
+                          CustomSuccessHandler customSuccessHandler,
+                          TokenService tokenService, List<HandlerMapping> handlerMappings,
+                          EndpointUrlCollector endpointUrlCollector) {
         this.customOauth2UserService = customOauth2UserService;
         this.jwtUtil = jwtUtil;
         this.customSuccessHandler = customSuccessHandler;
         this.tokenService = tokenService;
+        this.handlerMappings = handlerMappings;
+        this.endpointUrlCollector = endpointUrlCollector;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
+        List<String> publicUrls = endpointUrlCollector.getPublicUrls();
+        List<String> privateUrls = endpointUrlCollector.getPrivateUrls();
+            for(String p : privateUrls){
+                System.out.println("p = " + p);
+            }
+            
+            for (String q : publicUrls){
+                System.out.println("q = " + q);
+            }
         http
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
@@ -100,18 +124,21 @@ public class SecurityConfig {
         //커스텀한 로그아웃 필터를 등록 =>기존 필터위치에
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, tokenService), LogoutFilter.class);
+        //404응답을 위한 필터(핸들러매핑을 찾아 없는 url이면 404반환)
+        http
+                .addFilterBefore(new PreCheckHandlerMappingFilter(handlerMappings), FilterSecurityInterceptor.class);
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(UrlConst.publicUrls.toArray(new String[0])).permitAll()
-                        .requestMatchers(UrlConst.privateUrls.toArray(new String[0])).authenticated()
-                        .anyRequest().authenticated());//나머지는 인증이 필요함
+                        .requestMatchers(publicUrls.toArray(new String[0])).permitAll()
+                        .requestMatchers(privateUrls.toArray(new String[0])).authenticated()
+                        .anyRequest().permitAll());
 
         //세션 설정 : STATELESS
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterAfter(new Testfilter(), AnonymousAuthenticationFilter.class);
+
 
         return http.build();
     }
