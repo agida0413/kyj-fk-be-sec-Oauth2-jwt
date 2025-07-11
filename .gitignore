@@ -34,3 +34,6 @@ build/reports/problems/problems-report.html
 .gradle/8.14.2/fileHashes/resourceHashesCache.bin
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
 .gradle/file-system.probe
+
+
+build/tmp/*
