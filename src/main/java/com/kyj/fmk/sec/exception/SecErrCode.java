@@ -19,7 +19,6 @@ public enum SecErrCode {
     SEC010("SEC010","인증되지 않은 요청입니다."),
     SEC011("SEC011","허가되지 않은 요청입니다.");
 
-
     private final String code;
     private final String msg;
 
