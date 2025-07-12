@@ -10,4 +10,6 @@ public interface TokenService {
     public void deleteRefresh(String key,String token);
     public boolean isExist(String key,String token);
     public ResponseEntity<ResApiDTO<Void>> reissueToken(HttpServletRequest request, HttpServletResponse response);
+    public void addBlackList(String token);
+    public boolean isExistBlackList(String token);
 }

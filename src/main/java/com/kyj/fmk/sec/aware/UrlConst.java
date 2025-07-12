@@ -3,6 +3,7 @@ package com.kyj.fmk.sec.aware;
 import java.util.List;
 
 public final class UrlConst {
+
     private static final String API_BASE_URL = "/api/v1/member/";
     public static final List<String> publicUrls = List.of(
             "/index.html",

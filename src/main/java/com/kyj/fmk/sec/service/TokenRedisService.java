@@ -26,13 +26,13 @@ public class TokenRedisService implements TokenService{
     private final RedisTemplate<String,Object> redisTemplate;
     private final JWTUtil jwtUtil;
     private final String REFRESH_TOKEN_KEY = "refresh:";
+    private final String BLACK_LIST_KEY = "blacklist:";
 
     @Override
     public void addRefresh(String key , String token) {
         TimeUnit timeUnit = TimeUnit.HOURS;
         long ttl = 24L * 7;  // 1주일 = 168시간
         String rediskey = REFRESH_TOKEN_KEY +key;
-        System.out.println("token = " + token);
         redisTemplate.opsForValue().set(rediskey , token,ttl,timeUnit);
 
     }
@@ -41,14 +41,16 @@ public class TokenRedisService implements TokenService{
     public void deleteRefresh(String key , String token) {
         String rediskey = REFRESH_TOKEN_KEY+key;
 
+        deleteRedis(rediskey,token);
+
+    }
+    private void deleteRedis(String rediskey , String token){
         String findToken =(String)redisTemplate.opsForValue().get(rediskey);
 
         if(findToken != null && findToken.equals(token)){
             redisTemplate.delete(rediskey);
         }
-
     }
-
     @Override
     public boolean isExist(String key,String token) {
         String redisKey = REFRESH_TOKEN_KEY+key;
@@ -117,10 +119,13 @@ public class TokenRedisService implements TokenService{
                 throw new KyjSysException(ApiErrCode.CM001,"토큰의 유형이 다릅니다.");
         }
 
+
+
+
         String chkUsrId=jwtUtil.getUsername(refresh);
 
 
-        Boolean isExist = isExist(chkUsrId,refresh); //DB에 저장되어 있는지 확인
+        Boolean isExist = isExist(chkUsrId,refresh);
 
         if (!isExist) {//없다면
 
@@ -128,6 +133,15 @@ public class TokenRedisService implements TokenService{
             response.setHeader(HttpHeaders.SET_COOKIE,responseCookie.toString());
 
                 throw new KyjSysException(ApiErrCode.CM001,"만료된 세션입니다.");
+        }
+
+        Boolean isExistBlackList = isExistBlackList(refresh);
+
+        if(isExistBlackList){
+            ResponseCookie responseCookie= CookieUtil.deleteCookie("refresh","/");//refresh 쿠키제거메서드
+            response.setHeader(HttpHeaders.SET_COOKIE,responseCookie.toString());
+
+            throw new KyjBizException(ApiErrCode.CM001,"허용되지 않은 접근입니다.");
         }
 
 
@@ -156,5 +170,26 @@ public class TokenRedisService implements TokenService{
         response.addHeader(HttpHeaders.SET_COOKIE, responseRefreshCookie.toString());
 
         return ResponseEntity.ok(new ResApiDTO<Void>(null));
+    }
+
+
+    @Override
+    public void addBlackList(String token){
+        TimeUnit timeUnit = TimeUnit.HOURS;
+        long ttl = 24L * 7;  // 1주일 = 168시간
+        String rediskey = BLACK_LIST_KEY+token;
+        redisTemplate.opsForValue().set(rediskey ,"true",ttl,timeUnit);
+    }
+
+    @Override
+    public boolean isExistBlackList(String token){
+        String rediskey = BLACK_LIST_KEY+token;
+        String value = (String)redisTemplate.opsForValue().get(rediskey);
+
+        if(value == null){
+            return false;
+        }
+
+        return true;
     }
 }

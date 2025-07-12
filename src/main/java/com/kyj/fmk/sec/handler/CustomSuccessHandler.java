@@ -1,4 +1,4 @@
-package com.kyj.fmk.sec.oauth2;
+package com.kyj.fmk.sec.handler;
 
 import com.kyj.fmk.core.util.CookieUtil;
 import com.kyj.fmk.sec.dto.CustomOAuth2User;
@@ -63,6 +63,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addHeader(HttpHeaders.SET_COOKIE, responseAccessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, responseRefreshCookie.toString());
         response.sendRedirect("http://localhost:8080/my");
+//        response.sendRedirect("http://localhost:8080/my"); 쿠키로 이동할 페이지를 받아 파라미터로 받아 넘겨준다.
     }
 
 

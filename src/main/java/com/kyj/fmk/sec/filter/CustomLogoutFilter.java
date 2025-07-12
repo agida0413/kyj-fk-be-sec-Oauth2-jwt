@@ -152,6 +152,9 @@ public class CustomLogoutFilter extends GenericFilterBean {
             response.addHeader(HttpHeaders.SET_COOKIE,responseCookie2.toString());
         }
 
+        //블랙리스트 등록
+        tokenService.addBlackList(refresh);
+
         //성공 응답값
         SecurityResponse.writeSuccessRes(response);
 

@@ -1,5 +1,6 @@
 package com.kyj.fmk.sec.filter;
 
+import com.kyj.fmk.sec.aware.EndpointUrlCollector;
 import com.kyj.fmk.sec.aware.UrlConst;
 import com.kyj.fmk.sec.dto.CustomOAuth2User;
 import com.kyj.fmk.sec.dto.UserDTO;
@@ -30,10 +31,8 @@ public class JwtFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         // UrlConst.publicUrls 리스트 안의 패턴과 비교해서 하나라도 매칭되면 필터 제외
-        for (String pattern : UrlConst.publicUrls) {
+        for (String pattern : EndpointUrlCollector.getPublicUrls()) {
             if (pathMatcher.match(pattern, requestURI)) {
-                System.out.println("pattern = " + pattern);
-                System.out.println("requestURI = " + requestURI);
                 return true;  // 필터를 수행하지 않음 (즉, 필터 제외)
             }
         }

@@ -8,7 +8,7 @@ import com.kyj.fmk.sec.filter.CustomLogoutFilter;
 import com.kyj.fmk.sec.filter.JwtFilter;
 import com.kyj.fmk.sec.handler.CustomLogoutSuccessHandler;
 import com.kyj.fmk.sec.jwt.JWTUtil;
-import com.kyj.fmk.sec.oauth2.CustomSuccessHandler;
+import com.kyj.fmk.sec.handler.CustomSuccessHandler;
 import com.kyj.fmk.sec.service.CustomOauth2UserService;
 import com.kyj.fmk.sec.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,14 +20,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.HandlerMapping;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

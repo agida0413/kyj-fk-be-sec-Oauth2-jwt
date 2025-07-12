@@ -15,9 +15,9 @@ import java.util.*;
 @Component
 public class EndpointUrlCollector implements ApplicationContextAware {
 
-    private final Set<String> publicUrls = new HashSet<>();
-    private final Set<String> privateUrls = new HashSet<>();
-    private final Set<String> defaultPrivateUrls = new HashSet<>();
+    private static final Set<String> publicUrls =Collections.synchronizedSet(new HashSet<>());
+    private static final Set<String> privateUrls = Collections.synchronizedSet(new HashSet<>());
+    private static final Set<String> defaultPrivateUrls = Collections.synchronizedSet(new HashSet<>());
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -51,11 +51,13 @@ public class EndpointUrlCollector implements ApplicationContextAware {
         privateUrls.removeAll(publicUrls);
     }
 
-    public List<String> getPublicUrls() {
+    public static List<String> getPublicUrls() {
         return publicUrls.stream().sorted().toList();
     }
 
-    public List<String> getPrivateUrls() {
+
+
+    public static List<String> getPrivateUrls() {
         return privateUrls.stream().sorted().toList();
     }
 }
