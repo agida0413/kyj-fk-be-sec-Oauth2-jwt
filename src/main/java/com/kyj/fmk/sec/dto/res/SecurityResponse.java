@@ -43,7 +43,7 @@ public final class SecurityResponse {
         ObjectMapper objectMapper = new ObjectMapper();
 
         String msg = SecErrHelper.determineErrMsg(secErrCode);
-        SecResApiErrDTO secResApiDTO = new SecResApiErrDTO(msg,httpStatus.value());
+        SecResApiErrDTO secResApiDTO = new SecResApiErrDTO(msg,httpStatus.value(),secErrCode);
         response.setStatus(httpStatus.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

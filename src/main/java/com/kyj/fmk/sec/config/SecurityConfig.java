@@ -12,8 +12,10 @@ import com.kyj.fmk.sec.handler.CustomSuccessHandler;
 import com.kyj.fmk.sec.service.CustomOauth2UserService;
 import com.kyj.fmk.sec.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,9 +27,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.HandlerMapping;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
+/**
+ *  * 2025-08-09
+ *  * @author 김용준
+ *  * 스프링 시큐리티에 filter chain및 설정을 하는 클래스
+ *  */
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -37,6 +44,7 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final TokenService tokenService;
     private final List<HandlerMapping> handlerMappings;
+    private Environment env;
 
     private final EndpointUrlCollector endpointUrlCollector;
 
@@ -47,13 +55,15 @@ public class SecurityConfig {
                           JWTUtil jwtUtil,
                           CustomSuccessHandler customSuccessHandler,
                           TokenService tokenService, List<HandlerMapping> handlerMappings,
-                          EndpointUrlCollector endpointUrlCollector) {
+                          EndpointUrlCollector endpointUrlCollector,
+                          Environment env){
         this.customOauth2UserService = customOauth2UserService;
         this.jwtUtil = jwtUtil;
         this.customSuccessHandler = customSuccessHandler;
         this.tokenService = tokenService;
         this.handlerMappings = handlerMappings;
         this.endpointUrlCollector = endpointUrlCollector;
+        this.env=env;
     }
 
     @Bean
@@ -61,33 +71,35 @@ public class SecurityConfig {
 
         List<String> publicUrls = endpointUrlCollector.getPublicUrls();
         List<String> privateUrls = endpointUrlCollector.getPrivateUrls();
-            for(String p : privateUrls){
-                System.out.println("p = " + p);
-            }
-            
-            for (String q : publicUrls){
-                System.out.println("q = " + q);
-            }
-        http
-                .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
-                        CorsConfiguration configuration = new CorsConfiguration();
+            //로컬에서만 동작
+        boolean isLocal = Arrays.asList(env.getActiveProfiles()).contains("local");
 
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
-                        configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
-                        configuration.setMaxAge(3600L);
+        if(isLocal){
+            http
+                    .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
-                        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+                        @Override
+                        public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
-                        return configuration;
-                    }
-                }));
+                            CorsConfiguration configuration = new CorsConfiguration();
+
+                            configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            configuration.setAllowCredentials(true);
+                            configuration.setAllowedHeaders(Collections.singletonList("*"));
+                            configuration.setMaxAge(3600L);
+
+
+                            // 노출할 헤더 (쿠키 + 인증 토큰 등)
+                            configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
+
+                            return configuration;
+                        }
+                    }));
+        }
+
         //csrf disable
         http
                 .csrf((auth) -> auth.disable());

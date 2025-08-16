@@ -14,7 +14,11 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import java.io.IOException;
 import java.util.List;
-
+/**
+ *  * 2025-08-09
+ *  * @author 김용준
+ *  * 404 응답을 내리기위한 필터이다.
+ *  */
 @Component
 @RequiredArgsConstructor
 @Slf4j

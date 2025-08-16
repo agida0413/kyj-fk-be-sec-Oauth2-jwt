@@ -1,9 +1,8 @@
 package com.kyj.fmk.sec.filter;
 
 import com.kyj.fmk.sec.aware.EndpointUrlCollector;
-import com.kyj.fmk.sec.aware.UrlConst;
-import com.kyj.fmk.sec.dto.CustomOAuth2User;
-import com.kyj.fmk.sec.dto.UserDTO;
+import com.kyj.fmk.sec.dto.member.MemberDTO;
+import com.kyj.fmk.sec.dto.oauth2.CustomOAuth2User;
 import com.kyj.fmk.sec.dto.res.SecurityResponse;
 import com.kyj.fmk.sec.exception.SecErrCode;
 import com.kyj.fmk.sec.jwt.JWTUtil;
@@ -20,6 +19,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.util.Arrays;
+/**
+ *  * 2025-08-09
+ *  * @author 김용준
+ *  * 스프링 시큐리티에서 사용되는 jwt 필터이다.
+ *  */
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -97,19 +102,30 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        String usrId = jwtUtil.getUsrId(accessToken);
+        String roles = jwtUtil.getRoles(accessToken);
+        String usrSeqId = jwtUtil.getUsrSeqId(accessToken);
+        String email = jwtUtil.getEmail(accessToken);
+        String nickname = jwtUtil.getNickname(accessToken);
+        String dtyCd = jwtUtil.getDtyCd(accessToken);
+        String career = jwtUtil.getCareer(accessToken);
+        String skillCds []= jwtUtil.getSkillCds(accessToken).split(",");
 
+        //Memberdto를 생성하여 값 set
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setUsrSeqId(Long.parseLong(usrSeqId));
+        memberDTO.setRole(roles);
+        memberDTO.setUsrId(usrId);
+        memberDTO.setEmail(email);
+        memberDTO.setNickname(nickname);
+        memberDTO.setDtyCd(dtyCd);
+        memberDTO.setCareer(Integer.parseInt(career));
+        memberDTO.setSkillCds(Arrays.asList(skillCds));
 
-        String username = jwtUtil.getUsername(accessToken);
-        String role = jwtUtil.getRoles(accessToken);
-
-        //userDTO를 생성하여 값 set
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(username);
-        userDTO.setRole(role);
 
 
         //UserDetails에 회원 정보 객체 담기
-        CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDTO);
+        CustomOAuth2User customOAuth2User = new CustomOAuth2User(memberDTO,false);
 
         //스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
@@ -119,4 +135,6 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
 
     }
+
+
 }

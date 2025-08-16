@@ -4,6 +4,11 @@ import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
+/**
+ *  * 2025-08-09
+ *  * @author 김용준
+ *  * 스프링 시큐리티에서 사용되는 에러코드의 집합
+ *  */
 @Getter
 public enum SecErrCode {
 

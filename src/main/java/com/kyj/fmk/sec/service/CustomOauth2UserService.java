@@ -1,20 +1,24 @@
 package com.kyj.fmk.sec.service;
 
-import com.kyj.fmk.sec.dto.*;
-import com.kyj.fmk.sec.entity.UserEntity;
-import com.kyj.fmk.sec.repository.jpa.UserRepository;
+import com.kyj.fmk.sec.dto.member.MemberDTO;
+import com.kyj.fmk.sec.dto.oauth2.*;
+import com.kyj.fmk.sec.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
+/**
+ *  * 2025-08-09
+ *  * @author 김용준
+ *  * 스프링 시큐리티에서 ouath2 로부터 리다이렉트된 정보를 추출하여 처리하는 서비스
+ *  */
 @Service
 @RequiredArgsConstructor
 public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
-    private final UserRepository userRepository;
+    private final AuthRepository authRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -32,40 +36,26 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         }  else{
             return null;
         }
+        MemberDTO mem =  new MemberDTO();
 
-        String username = oAuth2Response.getProvider()+"_"+oAuth2Response.getProviderId();
-        UserEntity existData = userRepository.findByUsername(username);
+        String usrId = oAuth2Response.getProvider()+"_"+oAuth2Response.getProviderId();
+        Boolean isExist = authRepository.isExist(usrId);
+        mem.setUsrId(usrId);
 
-        if (existData == null) {
+        if (isExist == null || !isExist) {
+            //usrid값 멤버dto담기
+            //추가정보입력 플래그 true
 
-            UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(username);
-            userEntity.setEmail(oAuth2Response.getEmail());
-            userEntity.setName(oAuth2Response.getName());
-            userEntity.setRole("ROLE_USER");
-
-            userRepository.save(userEntity);
-
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(username);
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole("ROLE_USER");
-
-            return new CustomOAuth2User(userDTO);
+            return new CustomOAuth2User(mem,true);
         }
         else {
 
-            existData.setEmail(oAuth2Response.getEmail());
-            existData.setName(oAuth2Response.getName());
+            //회원정보 셀렉트
+            //usr_id 업데이트
+            //추가정보입력 플래그 False
 
-            userRepository.save(existData);
-
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(existData.getUsername());
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole(existData.getRole());
-
-            return new CustomOAuth2User(userDTO);
+            return new CustomOAuth2User(mem,false);
         }
+
     }
 }

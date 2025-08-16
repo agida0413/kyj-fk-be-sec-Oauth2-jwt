@@ -1,73 +1,63 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.3'
+	id 'java-library'
+	id 'maven-publish'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.3"
-		// 또는 명시적으로:
-		// mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.3"
-	}
-}
-
 group = 'com.kyj.fmk'
-version = '0.0.1-SNAPSHOT'
+version = "0.0.1-SNAPSHOT"
 
 java {
+	withSourcesJar()
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.3"
 	}
 }
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("http://192.168.56.1:9090/repository/project-core-snapshot/")
+		allowInsecureProtocol = true // HTTP 사용 시 필수
+		credentials {
+			username = "admin"
+			password = "1234"
+		}
+	}
 }
 
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			name = "nexus"
+			url = uri("http://192.168.56.1:9090/repository/project-core-snapshot/")
+			allowInsecureProtocol = true
+			credentials {
+				username = "admin"
+				password = "1234"
+			}
+		}
+	}
+}
+
+configurations.all {
+	resolutionStrategy {
+		// SNAPSHOT 은 항상 최신 버전 사용
+		cacheChangingModulesFor 0, 'seconds'
+	}
+}
 dependencies {
-	dependencies {
-		implementation 'org.springframework.boot:spring-boot-starter-web'
-		implementation 'org.springframework.boot:spring-boot-starter-security'
-		implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-		implementation 'org.springframework.boot:spring-boot-starter-mail'
-		implementation 'org.springframework.boot:spring-boot-starter-aop'
-		implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-		implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-		implementation 'org.springframework.boot:spring-boot-starter-data-redis'  // Lettuce 포함, 버전 관리됨
-
-		implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
-		runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
-		runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-
-		compileOnly 'org.projectlombok:lombok'
+		api 'com.kyj.fmk:project-core-dev:0.0.1-SNAPSHOT'
 		annotationProcessor 'org.projectlombok:lombok'
 
-		runtimeOnly 'com.mysql:mysql-connector-j'
-
-		implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
-
-		implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
-
-		testImplementation 'org.springframework.boot:spring-boot-starter-test'
-		testImplementation 'org.springframework.security:spring-security-test'
-		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-		implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'  // reactor-netty 명시적 추가 (필요 시)
-		implementation fileTree(dir: 'libs')
-	}
-
-
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
 }

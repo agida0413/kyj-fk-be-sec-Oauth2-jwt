@@ -18,7 +18,11 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
 import java.util.Date;
-
+/**
+ *  * 2025-08-09
+ *  * @author 김용준
+ *  * 스프링 시큐리티에서 사용되는 JWTUtil
+ *  */
 @Component
 public final class JWTUtil {
 
@@ -66,50 +70,74 @@ public final class JWTUtil {
 
 
 
-    public String getUsername(String token) {
+    public String getUsrId(String token) {
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("usrId", String.class);
     }
 
     public String getCategory(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
-//    public String getNickname(String token) {
-//        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
-//    }
+    public String getNickname(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
+    }
 
 
-//    public String getUsrId(String token) {
-//        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("usrId", String.class);
-//
-//    }
+    public String getUsrSeqId(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("usrSeqId", String.class);
 
-//    public String getSex(String token) {
-//        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("sex", String.class);
-//    }
+    }
 
 
-//    public String getBirth(String token) {
-//        String dateStr = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("birth", String.class);
-//        return dateStr;
-//    }
     public String getRoles(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("roles", String.class);
     }
 
+    public String getSkillCds(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("skillCds", String.class);
+    }
+
+    public String getEmail(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
+    }
+
+    public String getDtyCd(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("dtyCd", String.class);
+    }
+
+    public String getCareer(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("career", String.class);
+    }
 
     //토큰을 만듬
-    public String createJwt(String category, String username, String roles ,Long expiredMs) {
+    public String createJwt(String category, String usrId,String usrSeqId ,
+                            String nickname, String roles , String skillCds ,
+                            String email,String dtyCd,String career, Long expiredMs) {
 
         return Jwts.builder()
                 .claim("category", category) //refresh토큰인지 access 토큰인지
-                .claim("username", username) //이름
-//                .claim("usrId", usrId)//아이디
-//                .claim("nickname", nickname)//닉네임
-//                .claim("sex", sex)
-//                .claim("birth", birth)
+                .claim("usrId", usrId) //이름
+                .claim("usrSeqId", usrSeqId)//아이디
+                .claim("nickname", nickname)//닉네임
+                .claim("skillCds", skillCds)
+                .claim("email", email)
                 .claim("roles",roles)
+                .claim("dtyCd",dtyCd)
+                .claim("career",career)
+                .issuedAt(new Date(System.currentTimeMillis()))//만든날
+                .expiration(new Date(System.currentTimeMillis() + expiredMs))//유효기간
+                .signWith(secretKey)//시크릿키
+                .compact();
+    }
+
+
+    //토큰을 만듬
+    public String createJoinJwt(String category, String usrId, Long expiredMs) {
+
+        return Jwts.builder()
+                .claim("category", category)
+                .claim("usrId", usrId) //이름
                 .issuedAt(new Date(System.currentTimeMillis()))//만든날
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))//유효기간
                 .signWith(secretKey)//시크릿키

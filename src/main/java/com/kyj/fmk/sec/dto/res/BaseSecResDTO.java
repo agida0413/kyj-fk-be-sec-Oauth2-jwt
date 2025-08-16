@@ -22,6 +22,8 @@ public class BaseSecResDTO<T> {
     private T data;
     //response 시간 DateFormat 해야함
     private String resTime;
+    //응답코드
+    private String code;
 
     /**
      * protected 생성자

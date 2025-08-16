@@ -1,5 +1,6 @@
 package com.kyj.fmk.sec.dto.res;
 
+import com.kyj.fmk.sec.exception.SecErrCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -15,7 +16,8 @@ public class SecResApiErrDTO<T> extends BaseSecResDTO {
      * @param msg
      * @param status
      */
-    public SecResApiErrDTO(String msg, int status){
+    public SecResApiErrDTO(String msg, int status, SecErrCode secErrCode){
+        this.setCode(secErrCode.getCode());
         this.setMsg(msg);
         this.setStatus(status);
     }
@@ -37,7 +39,8 @@ public class SecResApiErrDTO<T> extends BaseSecResDTO {
      * @param status
      * @param data
      */
-    public SecResApiErrDTO(String msg, int status, T data){
+    public SecResApiErrDTO(String msg, int status, T data, SecErrCode secErrCode){
+        this.setCode(secErrCode.getCode());
         this.setMsg(msg);
         this.setData(data);
         this.setStatus(status);
@@ -48,6 +51,7 @@ public class SecResApiErrDTO<T> extends BaseSecResDTO {
      */
     private void setDefaultVal(){
         this.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        this.setCode(SecErrCode.SEC006.getCode());
     }
 
 }
