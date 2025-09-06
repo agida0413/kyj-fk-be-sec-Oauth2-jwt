@@ -1,6 +1,7 @@
 package com.kyj.fmk.sec.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kyj.fmk.sec.aware.EndpointUrlCollector;
 import com.kyj.fmk.sec.filter.PreCheckHandlerMappingFilter;
 import com.kyj.fmk.sec.handler.CustomAuthenticationEntryPoint;
@@ -16,6 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -44,6 +47,7 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final TokenService tokenService;
     private final List<HandlerMapping> handlerMappings;
+
     private Environment env;
 
     private final EndpointUrlCollector endpointUrlCollector;
@@ -85,7 +89,10 @@ public class SecurityConfig {
 
                             CorsConfiguration configuration = new CorsConfiguration();
 
-                            configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                            configuration.setAllowedOrigins(Arrays.asList(
+                                    "http://localhost:3000",
+                                    "https://bottle-story-dev.com:31443"
+                            ));
                             configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                             configuration.setAllowCredentials(true);
                             configuration.setAllowedHeaders(Collections.singletonList("*"));

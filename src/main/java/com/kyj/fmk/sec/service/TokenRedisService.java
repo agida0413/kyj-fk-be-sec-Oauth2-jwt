@@ -157,18 +157,15 @@ public class TokenRedisService implements TokenService{
         String roles = jwtUtil.getRoles(refresh);
         String usrSeqId = jwtUtil.getUsrSeqId(refresh);
         String email = jwtUtil.getEmail(refresh);
-        String nickname = jwtUtil.getNickname(refresh);
-        String dtyCd = jwtUtil.getDtyCd(refresh);
-        String career = jwtUtil.getCareer(refresh);
-        String skillCds = jwtUtil.getSkillCds(refresh);
+
 
 
 
         //새로운 jwt 토큰 발급
-        String nwAccess = jwtUtil.createJwt("access", usrId, usrSeqId,nickname,skillCds,
-                                              email,roles,dtyCd,career,300000L);//엑세스 토큰
-        String nwRefresh = jwtUtil.createJwt("refresh", usrId, usrSeqId,nickname,skillCds,
-                                              email,roles,dtyCd,career,86400000L); //리프레시 토큰
+        String nwAccess = jwtUtil.createJwt("access", usrId, usrSeqId,
+                                              email,roles,300000L);//엑세스 토큰
+        String nwRefresh = jwtUtil.createJwt("refresh", usrId, usrSeqId,
+                                              email,roles,86400000L); //리프레시 토큰
 
 
         deleteRefresh(usrId, refresh); //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장

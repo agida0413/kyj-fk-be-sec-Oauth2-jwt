@@ -22,7 +22,7 @@ dependencyManagement {
 repositories {
 	mavenCentral()
 	maven {
-		url = uri("http://192.168.56.1:9090/repository/project-core-snapshot/")
+		url = uri("http://192.168.56.1:9090/repository/bottle-story/")
 		allowInsecureProtocol = true // HTTP 사용 시 필수
 		credentials {
 			username = "admin"
@@ -40,7 +40,7 @@ publishing {
 	repositories {
 		maven {
 			name = "nexus"
-			url = uri("http://192.168.56.1:9090/repository/project-core-snapshot/")
+			url = uri("http://192.168.56.1:9090/repository/bottle-story/")
 			allowInsecureProtocol = true
 			credentials {
 				username = "admin"
@@ -57,7 +57,7 @@ configurations.all {
 	}
 }
 dependencies {
-		api 'com.kyj.fmk:project-core-dev:0.0.1-SNAPSHOT'
+		api 'com.kyj.fmk:bottle-core-dev:0.0.1-SNAPSHOT'
 		annotationProcessor 'org.projectlombok:lombok'
 
 }
