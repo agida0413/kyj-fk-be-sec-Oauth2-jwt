@@ -17,20 +17,20 @@ public class AuthRepository {
 
     /**
      * 해당 유저아이디에 해당하는 데이터베이스가 존재하는지 확인하는 repo
-     * @param usrId
+     * @param memberDTO
      * @return
      */
-    public Boolean isExist(String usrId){
-        return authMapper.isExist(usrId);
+    public Boolean isExist(MemberDTO memberDTO){
+        return authMapper.isExist(memberDTO);
     }
 
     /**
      * 유저아이디를 이용해 회원의 정보를 가져오는 repo
-     * @param usrId
+     * @param memberDTO
      * @return
      */
-    public MemberDTO findByUsrId(String usrId){
-        return authMapper.findByUsrId(usrId);
+    public MemberDTO findByUsrId(MemberDTO memberDTO){
+        return authMapper.findByUsrId(memberDTO);
     }
 
     /**

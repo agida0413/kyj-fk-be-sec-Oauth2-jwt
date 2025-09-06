@@ -14,10 +14,8 @@ import java.util.*;
 public class CustomOAuth2User implements OAuth2User {
 
     private final MemberDTO memberDTO;
-    private final boolean additionalInfo;
 
     public CustomOAuth2User(MemberDTO memberDTO,boolean additionalInfo) {
-     this.additionalInfo=additionalInfo;
      this.memberDTO = memberDTO;
     }
 
@@ -56,21 +54,6 @@ public class CustomOAuth2User implements OAuth2User {
     }
     public  String getEmail(){
         return memberDTO.getEmail();
-    }
-    public  String getNickname(){
-        return memberDTO.getNickname();
-    }
-    public  String getDtyCd(){
-        return memberDTO.getDtyCd();
-    }
-    public int getCareer(){
-        return memberDTO.getCareer();
-    }
-    public List<String> getSkillCds(){
-        return memberDTO.getSkillCds();
-    }
-    public boolean isAdditionalInfo(){
-        return this.additionalInfo;
     }
 
 }

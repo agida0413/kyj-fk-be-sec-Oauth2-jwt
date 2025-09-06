@@ -68,6 +68,15 @@ public final class JWTUtil {
         return true;
     }
 
+    public boolean validate(String token) {
+        try {
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+        } catch (Exception e){
+            return false;
+        }
+
+        return true;
+    }
 
 
     public String getUsrId(String token) {
@@ -77,10 +86,6 @@ public final class JWTUtil {
 
     public String getCategory(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
-    }
-
-    public String getNickname(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
     }
 
 
@@ -94,37 +99,22 @@ public final class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("roles", String.class);
     }
 
-    public String getSkillCds(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("skillCds", String.class);
-    }
 
     public String getEmail(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
     }
 
-    public String getDtyCd(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("dtyCd", String.class);
-    }
-
-    public String getCareer(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("career", String.class);
-    }
 
     //토큰을 만듬
     public String createJwt(String category, String usrId,String usrSeqId ,
-                            String nickname, String roles , String skillCds ,
-                            String email,String dtyCd,String career, Long expiredMs) {
+                            String email,String roles, Long expiredMs) {
 
         return Jwts.builder()
                 .claim("category", category) //refresh토큰인지 access 토큰인지
                 .claim("usrId", usrId) //이름
                 .claim("usrSeqId", usrSeqId)//아이디
-                .claim("nickname", nickname)//닉네임
-                .claim("skillCds", skillCds)
                 .claim("email", email)
                 .claim("roles",roles)
-                .claim("dtyCd",dtyCd)
-                .claim("career",career)
                 .issuedAt(new Date(System.currentTimeMillis()))//만든날
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))//유효기간
                 .signWith(secretKey)//시크릿키
@@ -132,16 +122,6 @@ public final class JWTUtil {
     }
 
 
-    //토큰을 만듬
-    public String createJoinJwt(String category, String usrId, Long expiredMs) {
 
-        return Jwts.builder()
-                .claim("category", category)
-                .claim("usrId", usrId) //이름
-                .issuedAt(new Date(System.currentTimeMillis()))//만든날
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))//유효기간
-                .signWith(secretKey)//시크릿키
-                .compact();
-    }
 
 }

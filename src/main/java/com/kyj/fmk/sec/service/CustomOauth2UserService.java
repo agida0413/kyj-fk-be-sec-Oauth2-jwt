@@ -39,20 +39,33 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         MemberDTO mem =  new MemberDTO();
 
         String usrId = oAuth2Response.getProvider()+"_"+oAuth2Response.getProviderId();
-        Boolean isExist = authRepository.isExist(usrId);
+        String email = oAuth2Response.getEmail();
+
         mem.setUsrId(usrId);
+        mem.setEmail(email);
+
+        Boolean isExist = authRepository.isExist(mem);
+
+
 
         if (isExist == null || !isExist) {
             //usrid값 멤버dto담기
             //추가정보입력 플래그 true
+            authRepository.insertMember(mem);
 
-            return new CustomOAuth2User(mem,true);
+
+            return new CustomOAuth2User(mem,false);
         }
         else {
 
             //회원정보 셀렉트
             //usr_id 업데이트
-            //추가정보입력 플래그 False
+            MemberDTO findMem = authRepository.findByUsrId(mem);
+            mem.setUsrSeqId(findMem.getUsrSeqId());
+            if(!findMem.getUsrId().equals(mem.getUsrId())){
+                authRepository.updateMember(mem);
+            }
+
 
             return new CustomOAuth2User(mem,false);
         }

@@ -106,10 +106,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String roles = jwtUtil.getRoles(accessToken);
         String usrSeqId = jwtUtil.getUsrSeqId(accessToken);
         String email = jwtUtil.getEmail(accessToken);
-        String nickname = jwtUtil.getNickname(accessToken);
-        String dtyCd = jwtUtil.getDtyCd(accessToken);
-        String career = jwtUtil.getCareer(accessToken);
-        String skillCds []= jwtUtil.getSkillCds(accessToken).split(",");
 
         //Memberdto를 생성하여 값 set
         MemberDTO memberDTO = new MemberDTO();
@@ -117,10 +113,7 @@ public class JwtFilter extends OncePerRequestFilter {
         memberDTO.setRole(roles);
         memberDTO.setUsrId(usrId);
         memberDTO.setEmail(email);
-        memberDTO.setNickname(nickname);
-        memberDTO.setDtyCd(dtyCd);
-        memberDTO.setCareer(Integer.parseInt(career));
-        memberDTO.setSkillCds(Arrays.asList(skillCds));
+
 
 
 
